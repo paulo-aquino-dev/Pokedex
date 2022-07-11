@@ -1,28 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <ul>
+    <li v-for="pokemon in pokemons" :key="pokemon.nome">
+      <img
+        :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${get_pokemon_id(
+          pokemon
+        )}.png`"
+        alt="pokemon.name"
+        width="10%"
+      />
+      <h2 class="text-center">
+        {{ pokemon.name }}
+        <span class="title">#{{ get_pokemon_id(pokemon) }}</span>
+      </h2>
+    </li>
+  </ul>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import axios from "axios";
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  components: {},
+  data: () => ({
+    pokemons: [],
+  }),
+  mounted() {
+    axios
+      .get("https://pokeapi.co/api/v2/pokemon?limit=151")
+      .then((response) => {
+        this.pokemons = response.data.results;
+      });
+  },
+  methods: {
+    get_pokemon_id(pokemon) {
+      return Number(pokemon.url.split("/")[6]);
+    },
+  },
+};
 </script>
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+.title {
+  padding-left: 200px;
 }
 </style>
